@@ -28,13 +28,14 @@ jobs:
         id: search_latest_tag
         run: |
           LATEST_TAG=$(git tag --list --sort=creatordate | egrep '^[0-9]+\.[0-9]+\.[0-9]+' | tail -1)
-          helm repo add datashim https://swissdatasciencecenter.github.io/datashim-charts/
+          helm repo add datashim https://swissdatasciencecenter.github.io/datashim-charts/ || echo "Cannot find chart repo"
           helm repo update
-          HELM_SEARCH_RESULT=$(helm search repo datashim --version $LATEST_TAG --output json)
+          HELM_SEARCH_RESULT=$(helm search repo datashim --version $LATEST_TAG --output json || echo 'not found')
           echo "::set-output name=helm_search_result::$HELM_SEARCH_RESULT"
           echo "::set-output name=latest_tag::$LATEST_TAG"
       
       - name: Checkout tag
         if: ${{ steps.search_latest_tag.helm_search_result != '[]' }}
         run: |
+          echo "Checking out tag ${{ steps.search_latest_tag.latest_tag }}"
           git checkout ${{ steps.search_latest_tag.latest_tag }}
