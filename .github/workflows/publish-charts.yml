@@ -51,12 +51,16 @@ jobs:
         run: |
           helm package ./chart -u -d ./.helm-deploy/
       
-      - name: Publish chart
-        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
+      - name: Set CR env values
         run: |
           echo "CR_OWNER=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $1}')" >> $GITHUB_ENV
           echo "CR_GIT_REPO=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')" >> $GITHUB_ENV
+          echo "CR_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          echo "CR_PACKAGE_PATH=.helm-deploy" >> $GITHUB_ENV
+
+      - name: Publish chart
+        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
+        run: |
+          echo $CR_OWNER
+          echo $CR_GIT_REPO
           cr upload
-        env:
-          CR_PACKAGE_PATH: .helm-deploy
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
