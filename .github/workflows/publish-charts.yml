@@ -63,5 +63,5 @@ jobs:
         run: |
           echo $CR_OWNER
           echo $CR_GIT_REPO
-          cr upload
+          cr upload --skip-existing
           cr index
