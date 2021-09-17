@@ -40,3 +40,15 @@ jobs:
         run: |
           echo "Checking out tag ${{ steps.search_latest_tag.outputs.latest_tag }}"
           git checkout ${{ steps.search_latest_tag.outputs.latest_tag }}
+      
+      - name: Package chart
+        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
+        run: |
+          helm package ./chart -u -d ./.helm-deploy/
+      
+      - name: Publish chart
+        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
+        uses: docker://quay.io/helmpack/chart-releaser:v1.2.1
+        run: |
+          ls -la
+          cr version
