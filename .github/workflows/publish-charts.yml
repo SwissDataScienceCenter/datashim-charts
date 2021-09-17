@@ -18,6 +18,11 @@ jobs:
         with:
           repository: 'datashim-io/datashim'
           fetch-depth: 0
+      
+      - name: Install chart releaser
+        run: |
+          curl -L https://github.com/helm/chart-releaser/releases/download/v1.2.1/chart-releaser_1.2.1_linux_amd64.tar.gz | tar -xz -C /usr/local/bin/
+          chmod a+x /usr/local/bin/cr
 
       - name: Install Helm
         uses: azure/setup-helm@v1
@@ -48,7 +53,6 @@ jobs:
       
       - name: Publish chart
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
-        uses: docker://quay.io/helmpack/chart-releaser:v1.2.1
         run: |
           ls -la
           cr version
