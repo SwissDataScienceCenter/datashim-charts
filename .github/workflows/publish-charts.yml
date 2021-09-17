@@ -54,5 +54,10 @@ jobs:
       - name: Publish chart
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
-          ls -la
-          cr version
+          echo ::set-env name=CR_OWNER::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
+          echo ::set-env name=CR_GIT_REPO::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $1}')
+          echo $CR_OWNER $CR_GIT_REPO
+          cr upload
+        env:
+          CR_PACKAGE_PATH: .helm-deploy
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
