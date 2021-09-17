@@ -24,10 +24,7 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          cat <<EOF >> .cr-config.yaml
-          owner: datashim-io
-          git-repo: datashim
-          EOF
+          ln -s chart charts
 
       - name: Install Helm
         uses: azure/setup-helm@v1
@@ -37,9 +34,7 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
         with: 
-          charts_dir: chart
           charts_repo_url: https://swissdatasciencecenter.github.io/datashim-charts
-          config: .cr-config.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
