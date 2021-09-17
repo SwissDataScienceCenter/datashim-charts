@@ -64,3 +64,4 @@ jobs:
           echo $CR_OWNER
           echo $CR_GIT_REPO
           cr upload
+          cr index
