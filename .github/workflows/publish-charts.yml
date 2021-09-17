@@ -20,25 +20,28 @@ jobs:
           ref: master
           fetch-depth: 0
       
-      - name: Configure Git
+      - name: Configure Git and make chart releaser config
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          cat <<EOF >> .cr-config.yaml
+          owner: datashim-io
+          git-repo: datashim
+          EOF
 
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
           version: v3.4.0
-
+      
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
         with: 
           charts_dir: chart
           charts_repo_url: https://swissdatasciencecenter.github.io/datashim-charts
+          config: .cr-config.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_OWNER: datashim-io
-          CR_GIT_REPO: datashim
 
       # - name: Search for latest tag
       #   id: search_latest_tag
