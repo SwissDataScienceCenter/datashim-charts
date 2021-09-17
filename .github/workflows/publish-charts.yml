@@ -36,7 +36,7 @@ jobs:
           echo "::set-output name=latest_tag::$LATEST_TAG"
       
       - name: Checkout tag
-        if: ${{ steps.search_latest_tag.helm_search_result != '[]' }}
+        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
-          echo "Checking out tag ${{ steps.search_latest_tag.latest_tag }}"
-          git checkout ${{ steps.search_latest_tag.latest_tag }}
+          echo "Checking out tag ${{ steps.search_latest_tag.outputs.latest_tag }}"
+          git checkout ${{ steps.search_latest_tag.outputs.latest_tag }}
