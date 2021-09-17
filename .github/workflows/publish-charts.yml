@@ -18,50 +18,23 @@ jobs:
         with:
           repository: 'datashim-io/datashim'
           fetch-depth: 0
-      
-      - name: Configure Git and make chart releaser config
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          cat <<EOF >> .cr-config.yaml
-          owner: datashim-io
-          git-repo: datashim
-          EOF
 
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
           version: v3.4.0
+
+      - name: Search for latest tag
+        id: search_latest_tag
+        run: |
+          LATEST_TAG=$(git tag --list --sort=creatordate | egrep '^[0-9]+\.[0-9]+\.[0-9]+' | tail -1)
+          helm repo add datashim https://swissdatasciencecenter.github.io/datashim-charts/
+          helm repo update
+          HELM_SEARCH_RESULT=$(helm search repo datashim --version $LATEST_TAG --output json)
+          echo "::set-output name=helm_search_result::$HELM_SEARCH_RESULT"
+          echo "::set-output name=latest_tag::$LATEST_TAG"
       
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.2.1
-        with:
-          charts_dir: chart
-          config: .cr-config.yaml
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      # - name: Search for latest tag
-      #   id: search_latest_tag
-      #   run: |
-      #     LATEST_TAG=$(git tag --list --sort=creatordate | egrep '^[0-9]+\.[0-9]+\.[0-9]+' | tail -1)
-      #     helm repo add datashim https://swissdatasciencecenter.github.io/datashim-charts/
-      #     helm repo update
-      #     HELM_SEARCH_RESULT=$(helm search repo datashim --version $LATEST_TAG --output json)
-      #     echo "::set-output name=helm_search_result::$HELM_SEARCH_RESULT"
-      #     echo "::set-output name=latest_tag::$LATEST_TAG"
-      
-      # - name: Checkout tag
-      #   if: ${{ steps.search_latest_tag.helm_search_result != '[]' }}
-      #   run: |
-      #     git checkout ${{ steps.search_latest_tag.latest_tag }}
-
-      # - name: Configure Git
-      #   run: |
-      #     git config user.name "$GITHUB_ACTOR"
-      #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      # - name: Run chart-releaser
-      #   uses: helm/chart-releaser-action@v1.1.0
-      #   env:
-      #     CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Checkout tag
+        if: ${{ steps.search_latest_tag.helm_search_result != '[]' }}
+        run: |
+          git checkout ${{ steps.search_latest_tag.latest_tag }}
