@@ -58,9 +58,17 @@ jobs:
           echo "CR_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
           echo "CR_PACKAGE_PATH=.helm-deploy" >> $GITHUB_ENV
 
+      - name: Checkout gh pages repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          ref: gh-pages
+          path: .gh-pages
+
       - name: Publish chart
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
+          cd .gh-pages
           echo $CR_OWNER
           echo $CR_GIT_REPO
           cr upload --skip-existing
