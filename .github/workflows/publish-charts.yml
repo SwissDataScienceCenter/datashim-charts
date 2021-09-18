@@ -56,7 +56,6 @@ jobs:
           echo "CR_OWNER=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $1}')" >> $GITHUB_ENV
           echo "CR_GIT_REPO=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')" >> $GITHUB_ENV
           echo "CR_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
-          echo "CR_PACKAGE_PATH=.helm-deploy" >> $GITHUB_ENV
 
       - name: Checkout gh pages repo
         uses: actions/checkout@v2
@@ -69,9 +68,5 @@ jobs:
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
           cr upload --skip-existing --package-path .helm-deploy
-      
-      - name: CR index
-        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
-        run: |
           cd .gh-pages
-          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --index-path .index-deploy/index.yaml --push --package-path ../.helm-deploy
+          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --push --package-path ../.helm-deploy
