@@ -69,4 +69,6 @@ jobs:
         run: |
           cr upload --skip-existing --package-path .helm-deploy
           cd .gh-pages
-          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --push --package-path ../.helm-deploy
+          ls -la
+          git remote -v
+          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --push --package-path ../.helm-deploy --index-path ./index.yaml
