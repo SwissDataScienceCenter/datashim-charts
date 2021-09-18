@@ -68,10 +68,10 @@ jobs:
       - name: CR upload
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
-          cr upload --skip-existing
+          cr upload --skip-existing --package-path .helm-deploy
       
       - name: CR index
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
           cd .gh-pages
-          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --index-path .index-deploy/index.yaml --push
+          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --index-path .index-deploy/index.yaml --push --package-path ../.helm-deploy
