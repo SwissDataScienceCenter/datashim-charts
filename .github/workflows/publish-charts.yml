@@ -64,14 +64,11 @@ jobs:
           ref: gh-pages
           path: .gh-pages
 
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
       - name: Publish chart with CR
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
           cr upload --skip-existing --package-path .helm-deploy
           cd .gh-pages
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --push --package-path ../.helm-deploy --index-path ./index.yaml
