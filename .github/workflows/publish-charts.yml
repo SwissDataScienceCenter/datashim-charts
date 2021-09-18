@@ -65,11 +65,13 @@ jobs:
           ref: gh-pages
           path: .gh-pages
 
-      - name: Publish chart
+      - name: CR upload
+        if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
+        run: |
+          cr upload --skip-existing
+      
+      - name: CR index
         if: ${{ steps.search_latest_tag.outputs.helm_search_result != '[]' }}
         run: |
           cd .gh-pages
-          echo $CR_OWNER
-          echo $CR_GIT_REPO
-          cr upload --skip-existing
           cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --index-path .index-deploy/index.yaml --push
