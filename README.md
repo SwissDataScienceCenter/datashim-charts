@@ -1,7 +1,7 @@
 # Unofficial [Datashim](https://github.com/datashim-io/datashim) Helm Chart Repository
 
 This repository checks the [Datashim project](https://github.com/datashim-io/datashim)
-once a week for new releases and published the helm charts here over at
+once a week for new releases and publishes the helm charts here over at
 https://swissdatasciencecenter.github.io/datashim-charts/.
 
 This repository should be archived when the Datashim helm charts
