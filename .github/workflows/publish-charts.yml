@@ -64,4 +64,4 @@ jobs:
           echo $CR_OWNER
           echo $CR_GIT_REPO
           cr upload --skip-existing
-          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/
+          cr index --charts-repo https://swissdatasciencecenter.github.io/datashim-charts/ --index-path .index-deploy/index.yaml
