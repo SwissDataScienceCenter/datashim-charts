@@ -33,7 +33,7 @@ jobs:
       - name: Search for latest tag
         id: search_latest_tag
         run: |
-          LATEST_TAG=$(git tag --list --sort=creatordate | egrep '^[0-9]+\.[0-9]+\.[0-9]+' | tail -1)
+          LATEST_TAG=$(git tag --list --sort=creatordate | egrep '^v[0-9]+\.[0-9]+\.[0-9]+' | tail -1)
           echo "Latest tag is $LATEST_TAG"
           echo "::set-output name=latest_tag::$LATEST_TAG"
       
